@@ -86,9 +86,9 @@ def load_valid_token() -> Optional[Dict[str, str]]:
                 if all(k in data for k in ["username", "token"]):
                     if is_valid_jwt(data["token"]):
                         return data
-                    print("⚠️ Stored token is invalid")
+                    print(" Stored token is invalid")
     except (json.JSONDecodeError, IOError) as e:
-        print(f"⚠️ Token file error: {str(e)}")
+        print(f" Token file error: {str(e)}")
     return None
 
 def create_authorized_session(token: str) -> requests.Session:
@@ -148,7 +148,7 @@ def handle_authentication() -> Tuple[requests.Session, str]:
 def main_flow():
     """Main interactive flow with error recovery"""
     if not validate_server_connection():
-        print(f"❌ Cannot connect to server at {BASE_URL}")
+        print(f" Cannot connect to server at {BASE_URL}")
         return
 
     try:
@@ -161,28 +161,28 @@ def main_flow():
                 description = input("Description (optional): ").strip()
                 
                 if not room_name:
-                    print("❌ Room name cannot be empty")
+                    print(" Room name cannot be empty")
                     continue
 
-                print("\n⏳ Creating room...")
+                print("\n Creating room...")
                 result = create_room(session, room_name, description)
-                print("\n✅ Room created successfully!")
+                print("\n Room created successfully!")
                 print(json.dumps(result, indent=2))
                 break
 
             except RoomValidationError as e:
-                print(f"\n❌ Validation error: {str(e)}")
+                print(f"\n Validation error: {str(e)}")
             except AuthError as e:
-                print(f"\n❌ Authentication error: {str(e)}")
+                print(f"\n Authentication error: {str(e)}")
                 os.remove(TOKEN_FILE)
                 session, token = handle_authentication()
             except Exception as e:
-                print(f"\n❌ Error: {str(e)}")
+                print(f"\n Error: {str(e)}")
                 if input("Try again? (y/n): ").lower() != 'y':
                     break
 
     except Exception as e:
-        print(f"\n❌ Fatal error: {str(e)}")
+        print(f"\n Fatal error: {str(e)}")
 
 if __name__ == "__main__":
     main_flow()
